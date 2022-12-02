@@ -1,12 +1,19 @@
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 
 function Main() {
+  const [slideIndex, setSlideIndex] = useState(0);
+
+  const handleSlide = num => {
+    return setSlideIndex(slideIndex + num);
+  };
+
   return (
     <Wrapper>
       <Container>
-        <Slider width={content.length}>
+        <Slider width={content.length} index={slideIndex}>
           {content.map(item => (
             <Item key={item.id} style={{ background: item.color }}>
               <Number>{item.id}</Number>
@@ -20,10 +27,10 @@ function Main() {
         ))}
       </PageNationWrap>
       <ButtonWrap>
-        <PrevBtn>
+        <PrevBtn onClick={() => handleSlide(-1)}>
           <FontAwesomeIcon icon={faAngleLeft} />
         </PrevBtn>
-        <NextBtn>
+        <NextBtn onClick={() => handleSlide(1)}>
           <FontAwesomeIcon icon={faAngleRight} />
         </NextBtn>
       </ButtonWrap>
@@ -106,10 +113,14 @@ const Wrapper = styled.main``;
 const Container = styled.section`
   overflow: hidden;
 `;
-const Slider = styled.div`
-  display: flex;
-  width: ${props => props.width * 100}vw;
-`;
+
+const Slider = styled.div(props => ({
+  display: 'flex',
+  width: `${props.width * 100}vw`,
+  transform: `translateX(${-100 * props.index}vw)`,
+  transition: 'transform 0.5s ease-in',
+}));
+
 const Item = styled.div`
   width: 100vw;
   height: 300px;
