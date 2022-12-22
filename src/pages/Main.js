@@ -1,10 +1,27 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { useInterval } from 'hook/useInterval';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 
 function Main() {
-  const [slideIndex, setSlideIndex] = useState(0);
+  const [slideIndex, setSlideIndex] = useState(1);
+  const [time, setTime] = useState(1000);
+  const slideRef = useRef();
+
+  const copiedContent = [content[content.length - 1], ...content, content[0]];
+
+  useInterval(() => {
+    setSlideIndex(slideIndex => slideIndex + 1);
+  }, time);
+
+  if (slideIndex === copiedContent.length) {
+    slideRef.current.style.transition = '0s';
+    setSlideIndex(1);
+    setTimeout(() => {
+      slideRef.current.style.transition = 'all 0.5s ease-in';
+    }, 0);
+  }
 
   const handleSlide = num => {
     return setSlideIndex(slideIndex + num);
@@ -13,9 +30,9 @@ function Main() {
   return (
     <Wrapper>
       <Container>
-        <Slider width={content.length} index={slideIndex}>
-          {content.map(item => (
-            <Item key={item.id} style={{ background: item.color }}>
+        <Slider width={copiedContent.length} index={slideIndex} ref={slideRef}>
+          {copiedContent.map((item, index) => (
+            <Item key={index} style={{ background: item.color }}>
               <Number>{item.id}</Number>
             </Item>
           ))}
@@ -67,42 +84,6 @@ const content = [
       '강의입니다. 추천해요! 들어보세요!\n 매일 업데이트 되는 코드런 신규강의를 만나보세요!',
     button: '세번째배너',
   },
-  {
-    id: 4,
-    color: '#ff7836',
-    label: '네번째',
-    maincontent: '네번째입니다',
-    subcontent:
-      '강의입니다. 추천해요! 들어보세요!\n 매일 업데이트 되는 코드런 신규강의를 만나보세요!',
-    button: '네번째배너 😎',
-  },
-  {
-    id: 5,
-    color: '#6ccad0',
-    label: '다섯번째',
-    maincontent: '다섯번째입니다',
-    subcontent:
-      '강의입니다. 추천해요! 들어보세요!\n 매일 업데이트 되는 코드런 신규강의를 만나보세요!',
-    button: '다섯번째배너',
-  },
-  {
-    id: 6,
-    color: '#ff627f',
-    label: '여섯번째',
-    maincontent: '여섯번째입니다',
-    subcontent:
-      '강의입니다. 추천해요! 들어보세요!\n 매일 업데이트 되는 코드런 신규강의를 만나보세요!',
-    button: '여섯번째배너',
-  },
-  {
-    id: 7,
-    color: '#086394',
-    label: '마지막',
-    maincontent: '마지막입니다',
-    subcontent:
-      '강의입니다. 추천해요! 들어보세요!\n 매일 업데이트 되는 코드런 신규강의를 만나보세요!',
-    button: '마지막배너',
-  },
 ];
 
 export default Main;
@@ -118,7 +99,7 @@ const Slider = styled.div(props => ({
   display: 'flex',
   width: `${props.width * 100}vw`,
   transform: `translateX(${-100 * props.index}vw)`,
-  transition: 'transform 0.5s ease-in',
+  transition: 'all 0.5s ease-in',
 }));
 
 const Item = styled.div`
