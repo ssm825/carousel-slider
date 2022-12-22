@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useInterval } from 'hook/useInterval';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
@@ -15,7 +15,8 @@ function Main() {
     setSlideIndex(slideIndex => slideIndex + 1);
   }, time);
 
-  if (slideIndex === copiedContent.length) {
+  console.log(slideIndex);
+  if (slideIndex > copiedContent?.length - 1) {
     slideRef.current.style.transition = '0s';
     setSlideIndex(1);
     setTimeout(() => {
@@ -40,7 +41,12 @@ function Main() {
       </Container>
       <PageNationWrap>
         {content.map(number => (
-          <PageItem key={number.id}>{number.id}</PageItem>
+          <PageItem
+            key={number.id}
+            className={number.id === slideIndex && 'select-page'}
+          >
+            {number.id}
+          </PageItem>
         ))}
       </PageNationWrap>
       <ButtonWrap>
@@ -132,7 +138,7 @@ const PageItem = styled.li`
   background-color: lightgray;
   cursor: pointer;
   &:hover,
-  .select-page {
+  &.select-page {
     color: white;
     background-color: darkgray;
   }
@@ -155,7 +161,7 @@ const Button = styled.button`
   border-radius: 50%;
   cursor: pointer;
   &:hover,
-  .select-btn {
+  &.select-btn {
     opacity: 70%;
   }
 `;
